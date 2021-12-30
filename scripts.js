@@ -4,6 +4,29 @@ class Calculator{
         this.curText = curText
     }
 
+    clear(){
+
+    }
+
+    delete(){
+
+    }
+
+    appendNumber(number){
+
+    }
+
+    chooseOperation(operation){
+
+    }
+
+    compute(){
+
+    }
+
+    updateDisplay(){
+        
+    }
 }
 
 const numberButtons = document.querySelectorAll('[data-number]')
