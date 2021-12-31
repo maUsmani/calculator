@@ -12,7 +12,7 @@ class Calculator{
     }
 
     delete(){
-
+        this.currentOperand = this.currentOperand.toString().slice(0, -1)
     }
 
     appendNumber(number){
@@ -21,17 +21,60 @@ class Calculator{
     }
 
     chooseOperation(operation){
+        if (this.currentOperand === '') return
+        if (this.previousOperand !== ''){
+            this.compute()
+        }
         this.operation=operation
         this.previousOperand = this.currentOperand
         this.currentOperand = ''
     }
 
     compute(){
+        let computation
+        const prev = parseFloat(this.previousOperand)
+        const current = parseFloat(this.currentOperand)
+        if (isNaN(prev) || isNaN(current)) return
+        switch(this.operation){
+            case '+':
+                computation = prev + current
+                break
+            case '-':
+                computation = prev - current
+                break
+            case '*':
+                    computation = prev * current
+                    break
+            case '÷':
+                    computation = prev / current
+                    break
+            default:
+                return
+        }
 
+        this.currentOperand = computation
+        this.operation = undefined
+        this.previousOperand = ''
+    }
+    getDisplayNumber(number){
+        const numberstr = number.toString().split('.')
+        const floatNumber = parseFloat(numberstr[0])
+        const floatNumberStr = floatNumber.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+        if (isNaN(floatNumber)) return ''
+        else if (isNaN(numberstr[1])) return floatNumberStr
+        return floatNumberStr + '.' + numberstr[1]
     }
 
     updateDisplay(){
-        this.currentOperandTextElement.innerText = this.currentOperand
+        this.currentOperandTextElement.innerText = 
+        this.getDisplayNumber(this.currentOperand)
+
+        if (this.operation != null) {
+            this.previousOperandTextElement.innerText = 
+            `${this.previousOperand} ${this.operation}`
+        } else{
+            this.previousOperandTextElement.innerText = ''
+        }
     }
 }
 
@@ -52,10 +95,24 @@ numberButtons.forEach(button =>{
     })
 })
 
-opertionsButtons.forEach(button =>{
+operationButtons.forEach(button =>{
     button.addEventListener('click', () => {
-        calculator.appendNumber(button.innerText)
+        calculator.chooseOperation(button.innerText)
         calculator.updateDisplay()
     })
 })
 
+equalButton.addEventListener('click', button =>{
+    calculator.compute()
+    calculator.updateDisplay()
+})
+
+allClearButton.addEventListener('click', button =>{
+    calculator.clear()
+    calculator.updateDisplay()
+})
+
+deleteButton.addEventListener('click', button =>{
+    calculator.delete()
+    calculator.updateDisplay()
+})
